@@ -1,0 +1,976 @@
+package ch.hslu.prg.leds;
+
+import ch.hslu.prg.leds.proxy.LedColor;
+import ch.hslu.prg.leds.proxy.LedService;
+import java.util.Scanner;
+import java.util.Random;
+
+public class ClientApp {
+	
+	// statischer Scanner Implementieren, damit in jeder Methode der gleiche scanner benutzt werden kann
+	public static Scanner sc = new Scanner(System.in);
+	
+
+	//Main Methode
+	public static void main(String[] args) {
+		
+		// Service Objekt initialisieren in der Main methode, damit die Methoden mit dem gleichen Objekt arbeiten
+		LedService service = new LedService();	
+		
+		
+		// System Ausgabe am Anfang zum Alle Eingabemöglichkeiten aufzulisten
+		System.out.println("Aufgabe 1:\t ledsOnOFF");
+		System.out.println("Aufgabe 2:\t switchEvenOdd");
+		System.out.println("Aufgabe 3:\t switchRandom");
+		System.out.println("Aufgabe 4:\t showBinary");
+		System.out.println("Aufgabe 5:\t showBorder");
+		System.out.println("Aufgabe 6:\t showSquare");
+		System.out.println("Aufgabe 7:\t showRectange");
+		System.out.println("Aufgabe 8:\t showTriangle");
+		System.out.println("Aufgabe 9:\t siebDesEratosthenes");
+		System.out.println("Aufgabe 10:\t countColors");
+		System.out.println("Aufgabe 10.2:\t countColorsExt");
+		System.out.println("EXIT:\t\t Abbrechen" + "\n");
+
+		// Boolean für die Schleife
+		boolean keepGoing = true;
+				
+		// While Schleife mit Switch case um Aufgabe auszuwählen
+		while( keepGoing == true) {
+			System.out.println("\nBitte geben Sie die gewünschte Aufgabe von 1 bis 10 bzw 10.2 ein oder geben Sie EXIT ein um zu beenden: ");
+			String Aufgabe = sc.next();
+			
+			// Switch case um auszuwählen welche Aufgabe benötigt wird bzw ob das Programm beendet werden soll
+			switch(Aufgabe) {
+			
+				// 1.te Methode ledsOnOff 
+				case "1":
+				ledsOnOff(service);
+				break;
+				
+				// 2.te Methode switchEvenOdd
+				case "2":		
+				switchEvenOdd(service);
+				break;
+				
+				// 3.te Methode switchrandom
+				case "3":	
+				switchRandom(service);
+				break;
+				
+				// 4.te Methode showBinary
+				case "4":	
+				showBinary(service);
+				break;
+				
+				// 5.te Methode showBorder
+				case "5":
+				showBorder(service);
+				break;
+				
+				// 6.te Methode showSquare
+				case "6":
+				showSquare(service);
+				break;
+				
+				//7.te Methode showRectange
+				case "7":
+				showRectange(service);
+				break;
+				
+				// 8.te Methode showTriangle
+				case "8":
+				showTriangle(service);
+				break;
+				
+				// 9.te Methode siebDesEratosthenes
+				case "9":
+				siebDesEratosthenes(service);
+				break;
+				
+				// 10.te Methode countColors
+				case "10":
+				countColors(service);
+				break;
+				
+				// 10.2te Methode countColorsExt
+				case "10.2":
+				countColorsExt(service);
+				break;
+				
+				// 11. Programm beenden
+				case "EXIT":
+				keepGoing = false;
+				System.out.println("\nVielen Dank für das Benutzen");
+				break;
+				
+				// Falls keine richtige eingabe getätigt wird
+				default:
+				System.out.println("Das ist keine Valide Eingabe!");
+			}
+		}
+			
+			
+	}
+	
+//____________________________________________________________________________________________________________________________\\	
+	
+	// 1te Methode implementieren ledsOnOff()
+	public static void ledsOnOff(LedService service) {
+	
+		
+		// Variablen definieren
+		
+		// boolean für die do while schleife der Eingabe der Leds
+		boolean keepGoing = true;
+		
+		// int für die Eingegebene anzahl
+		int anzahl = 0;
+		
+		// do while Schleife, damit falls die Eingabe der Anzahl inkorrekt ist, es erneut fragt
+		do {
+			// Anzahl eingeben 
+			System.out.println("Bitte geben Sie die gewünschten Anzahl LEDs ein, jedoch nicht mehr als 256: ");
+			anzahl = sc.nextInt();
+			if(anzahl <= LedService.MAX_NUMBER_OF_LEDS) {
+				
+				// boolean variable auf false setzen um aus der do While schleife hinauszugehen
+				keepGoing = false;
+			}
+			
+			else {
+				// Fehlermeldung
+				System.out.println("Die eingegebene Zahl ist zu Gross!"); 
+			}
+			
+		}while(keepGoing == true);
+			
+		// Farbe eingeben
+		System.out.println("Wählen Sie die gewünschte Farbe (Gross- kleinschreibung achten!): \nBlau\nGelb\nRot\nGruen\nRandom\n\nEingabe:");
+        String farbauswahl = sc.next();
+        
+        // Standartwert der Farbe
+        LedColor farbeColor = LedColor.RED;
+
+        // switch case für die Auswahl der Farbe
+        switch (farbauswahl) {
+            case "Blau":
+                farbeColor = LedColor.BLUE;
+                break;
+            case "Gelb":
+                farbeColor = LedColor.YELLOW;
+                break;
+            case "Rot":
+                farbeColor = LedColor.RED;
+                break;
+            case "Gruen":
+                farbeColor = LedColor.GREEN;
+                break;
+            case "Random":
+                farbeColor = LedColor.RANDOM;
+                break;
+            default:
+            	//Falls die Eingabe nicht korrekt war, wird der Standartwert der Farbe genommen
+            	System.out.println("Eingabe nicht zulässig oder nicht richtig geschrieben, die standard Farbe (rot) wird benutzt");
+                break;
+        }
+	        
+	    // Leds hinzufügen mit der eingegeben Farbe
+	    service.addLeds(anzahl,farbeColor);
+	        		
+		// Für 2 Sekunden stoppen
+		service.stopExecutionFor(2000);
+		
+		// Schleife zum 3 mal wiederholung (von 4,5,6,7)
+		for(int counter = 0; counter < 3; counter++) {
+			
+			// Schleife zum LEDs einschalten
+			for(int c = 0; c < anzahl; c++) {
+				service.turnLedOn(c); 	
+				service.stopExecutionFor(50);}
+			
+			// Kurz anhalten 250 Millisekunden
+			service.stopExecutionFor(250);
+			
+			// Schleife zum LEDs ausschalten
+			for(int c = anzahl-1; c >= 0; c--) {
+			service.turnLedOff(c); 
+			service.stopExecutionFor(50);}
+			
+			// Kurz anhalten 250 Millisekunden
+			service.stopExecutionFor(250);
+			}
+		
+		// Für 2 Sekunden anhalten
+		service.stopExecutionFor(2000);
+			
+		// Alles zurücksetzen
+		service.reset();
+			
+	}
+	
+//____________________________________________________________________________________________________________________________\\	
+
+	// 2te Methode implemetieren switchEvenOdd()
+	public static void switchEvenOdd(LedService service) {
+	
+		// Boolean für die do while schleife initialisieren
+		boolean keepGoing = true;
+		// int für die eingegebene Anzahl initialisieren
+		int anzahl = 0;
+		
+		// do while Schleife, damit falls die Eingabe der Anzahl inkorrekt ist, es erneut fragt		
+		do {
+			// Anzahl eingeben 
+			System.out.println("Geben Sie die gewünschten Anzahl LEDs ein. Die Zahl muss eine vielfaches von 16  und darf nicht mehr als 256 sein: ");
+			anzahl = sc.nextInt();
+			if(anzahl % 16 == 0) {
+				service.addLeds(anzahl, LedColor.BLUE);	
+				keepGoing = false;
+			}
+			// Fehlermeldung
+			else{
+				System.out.println("Die Zahl ist kein vielfaches von 16"); 	
+			}
+		}while(keepGoing == true);
+		
+		// Für 2 Sekunden anhalten
+		service.stopExecutionFor(2000);
+		
+		
+		//For Schleife zum 3 mal wiederholen ( 3,4,5,6 und 7) 
+		for(int counter = 0; counter < 3; counter++) {
+			
+			// alle Leds einschalten deren nummer gerade ist
+			for(int c = 0 ; c < anzahl ; c++) 	{
+					if((c) % 2 == 0) {
+						service.turnLedOn(c);	
+					}		
+			}
+			
+			// Für 1 Sekunde anhalten
+			service.stopExecutionFor(1000);
+		
+			// alle Leds umschalten ( Wenn das Licht  an ist, dann ausschalten, sonst anschalten
+			for(int c = 0 ; c< anzahl; c++) {
+				if(service.isOn(c) == true) {
+					service.turnLedOff(c);	
+				}					
+				else { 
+					service.turnLedOn(c);
+				}	
+			}
+			
+			// Für 1 sekunde anhalten
+			service.stopExecutionFor(1000);
+	
+			// Alle ausschalten 
+			for(int c = 0; c < anzahl; c++){
+				service.turnLedOff(c);	
+			}
+			
+			// Für 1 Sekunde anhalten
+			service.stopExecutionFor(1000);
+		}
+		
+		// Alles zurücksetzen
+		service.reset();
+		}
+	
+//____________________________________________________________________________________________________________________________\\		
+
+	// 3te Methode implementieren switchRandom()
+	public static void switchRandom(LedService service) {
+				
+		// Objekt Random initialiseren
+		Random random = new Random();
+		
+		// Boolean für die do while schleife initialisieren
+		boolean keepGoing = true;
+		
+		// int für die eingegebene Anzahl initialisieren
+		int anzahl = 0;
+		
+		// do while Schleife, damit falls die Eingabe der Anzahl inkorrekt ist, es erneut nach der Eingabe fragt
+		do {
+			// Anzahl eingeben und LEDs einstecken
+			System.out.println("Geben Sie die gewünschten Anzahl LEDs ein. Die Zahl muss eine vielfaches von 16 sein: ");
+			anzahl = sc.nextInt();
+			if(anzahl % 16 == 0) {
+				service.addLeds(anzahl, LedColor.RANDOM);		
+				keepGoing = false;
+			}
+			// Fehlermeldung bei falscher Eingabe
+			else {
+				System.out.println("Die Zahl ist kein vielfaches von 16"); 	
+			}
+		}while(keepGoing == true);
+		
+		// Für 2 Sekunde anhalten
+		service.stopExecutionFor(2000);
+		
+		// Int Array für die Zufallszahlen
+		int[] randomArr = new int[(anzahl/2)];
+			
+		// For Schleife zum 3 mal wiederholen ( 3,4,5,6 und 7) 
+		for(int counter = 0; counter < 3; counter++) {
+		
+		
+			// Int Array füllen mit den generierten Zufallszahlen
+			for(int c = 0; c < randomArr.length; c++) {
+				randomArr[c] = random.nextInt(anzahl);
+				
+				// LEDS anschalten mit den generierten Zufalsszahlen
+				service.turnLedOn(randomArr[c]);
+			}
+			
+			// Für 1 Sekunde anhalten
+			service.stopExecutionFor(1000);
+			
+			// Alle angeschalteten LEDs ausschalten & alle ausgeschalteten LEDS anschalten
+			for(int c = 0; c <anzahl; c++) {
+				if(service.isOn(c) == true) {
+					service.turnLedOff(c);	
+				}				
+				else {
+					service.turnLedOn(c);
+				}	
+			}
+			
+			// Für 1 Sekunde anhalten
+			service.stopExecutionFor(1000);
+			
+			// Schleife, damit alle ausschalten 
+			for(int c = 0; c < anzahl; c++){
+				service.turnLedOff(c);	}
+			
+			// Für 1 Sekunde anhalten
+			service.stopExecutionFor(1000);
+		}
+		
+	// Alles zurücksetzen
+	service.reset();
+	}
+	
+//____________________________________________________________________________________________________________________________\\	
+	
+	// 4te Methode implementieren showBinary()
+	public static void showBinary(LedService service) {
+		
+		// boolean für die do while Schleife bei falscher Eingabe
+		boolean keepGoing = true;
+		
+		// int Variabble initialisieren
+		int anzahl = 0;
+		
+		// String Variable initialisieren, damit der eingegeben int zu String convertiert werden kann
+		String binaryString = null;
+		
+		// do while Schleife für den Fall, das die Eingabe nicht korrekt ist
+		do {
+			// Anzahl eingeben, die engabe muss eine ganze positve zahl sein
+			System.out.println("Geben Sie eine positive ganze Zahl ein, die als Binaerer Wert angezeigt werden soll: ");
+			anzahl = sc.nextInt();
+			
+			if(anzahl > 0 ) {
+				// die Eingegeben int Zahl wird mit dieser Methode zu einer binären Zahl(verkehrt) als String verwandelt.
+				binaryString = convertDezimalToBinaryString(anzahl);
+				keepGoing = false;
+			}
+			
+			// Fehlermeldung bei falscher Eingabe
+			else {
+				System.out.println("Die Zahl ist keine positive ganze Zahl"); 
+			}
+		}while(keepGoing == true);
+		
+		
+		// Variable für die Länge
+		int neededLeds = binaryString.length();
+		
+		// Schleife zum überprüfung ob erhöhung für die Menge an Leds nötig ist damit es ein vielfaches von 8 ist
+		for(; neededLeds  % 8 != 0; neededLeds++) {
+		}
+				
+		// Die Leds Einstecken mit der Anzahl an an plätzen die es benötigt.
+		service.addLeds(neededLeds);
+			
+	
+		// Die Leds einschalten die an sein müssen, damit man die Binäre zahl visuell sieht
+		for(int c = 0; c < binaryString.length(); c++) {
+			if(binaryString.charAt(c) == '1')	{
+				service.turnLedOn(c);			
+			}
+				
+		}
+		
+		// Für 5 Sekunden anhalten
+		service.stopExecutionFor(5000);
+		
+	// Alles zurücksetzen
+	service.reset();		
+	}
+	
+	
+	
+	// Methode convertDezimalToBinary String für die Methode show Binary
+	public static String convertDezimalToBinaryString(int binaryInt) {
+		
+		// 2 Strings initialisieren
+		String binaryString = "";
+	
+			/* For Schleife zum übersetzen von Dezimal zu Binär, die ausgabe hier ist verkehrt,
+			 * bzw man liest den Stirng von links nach recht (bsp 4 im dezimal != 0100, sondern 0010!!!
+			 * Das ist des weiteren jedoch nicht schlimm, da ich die binäre zahl verkehrt brauche um sie richtig auszugeben,
+			 * da das Led Steckboard von rechts nach links zählt also würde die zahl 0010(mit dieser methode) auf dem Led board so aussehen 0100!!
+			 * 
+			 * Die Schleife funktioniert so das die eingegeben zahl überprüft, 
+			 * wenn die zahl geteilt durch 2 genommen wird und kein rest übrig bleibt wird die Zahl 0 angefügt.
+			 * und die Zahl wird dann auch durch 2 geteilt.
+			 * 
+			 * wenn die Zahl geteilt durch 2 genommen wird und 1 als rest übrig bleibt, wird die Zahl 1 angefügt
+			 * und bei der zahl wird 1 abgezogen und dann auch durch 2 geteilt.
+			 * 
+			 * wenn die Zahl geteilt durch 2 genommen wird und 2 als rest übrig bleibt, wird die Zahl 1 angefügt
+			 *  und man ist am ende ( 0 % 2 = 2)
+			 * 
+			 */
+			 for(;binaryInt != 0;)
+				if(binaryInt % 2 == 0) {
+					binaryString += "0";
+					binaryInt /= 2;
+				}
+				else if (binaryInt % 2 == 1){
+					binaryString += "1";
+					binaryInt = (binaryInt -1) /2;
+				}
+				else { 
+				binaryString += "1";
+				break;
+				}
+			 
+		// man gibt den ausgerechnetet binären Wert zurück
+		return binaryString;
+	}
+	
+//____________________________________________________________________________________________________________________________\\		
+	
+	// 5te Methode implementieren showBorder
+	public static void showBorder(LedService service) {
+		
+		LedColor color = readLedColor();
+
+		// Leds hinzufügen
+		service.addLeds(LedService.MAX_NUMBER_OF_LEDS, color);
+		
+	
+		
+		// Delay für bessere Darstellung
+		service.setDelayInMillis(10);
+		
+		// 2 Sekunden warten
+		service.stopExecutionFor(2000);
+		
+		//geschleifte Klammer
+		
+		//Äussere Schleife zum iterieren von den Zeilen
+		for(int counter = 0; counter < LedService.MAX_NUMBER_OF_LEDS; counter += LedService.MAX_COLUMNS) {
+			// Innere Klammer zum alle notwendingen Leds einschalten
+			for(int c = counter; c < counter+LedService.MAX_ROWS ; c++) {
+				if(c < 16 || c % 16 == 0 || c % 16 == 15 || c > 240 ) {
+					service.turnLedOn(c);}
+			}
+		}
+		
+		// 5 Sekunden warten
+		service.stopExecutionFor(5000);
+		
+		// Schleife zum ausschalten
+		for(int c = 0; c < LedService.MAX_NUMBER_OF_LEDS; c++) {
+			if(service.isOn(c) == true) {
+				service.turnLedOff(c);
+		}}
+		// 2 Sekunden warten
+		service.stopExecutionFor(2000);
+		
+	// Alles zurücksetzen	
+	service.reset();
+	
+	}
+	
+	
+	private static LedColor readLedColor() {
+		
+		
+		// Variablen für Do while schleife
+		boolean keepGoing = false;
+		
+		// Variable für Farbe bzw für den return
+		LedColor color = null;
+		
+		// do while Schleife für die Eingabe der Farbe, falls Farbe nicht korrekt geschrieben wird, wird erneut gefragt
+		do {
+			System.out.print("\nBitte geben Sie eine Farbe ein. Die möglichkeiten sind: \nRot\nGruen\nBlau\nGelb\nRandom\n");
+			String farbe = sc.next();
+			
+			switch(farbe) {
+				case "Rot":
+					color = LedColor.RED;
+					break;
+				case "Gruen":
+					color = LedColor.GREEN;
+					break;
+	
+				case "Blau":
+					color = LedColor.BLUE;
+					break;
+	
+				case "Gelb":
+					color = LedColor.YELLOW;
+					break;
+					
+				case "Random":
+					color = LedColor.RANDOM;
+					break;
+				default:
+					System.out.println("\nUnzulässige Eingabe!");
+					keepGoing = true;
+			}
+			
+		} while(keepGoing == true);
+	// ausgewählte Farbe zurückgeben
+	return color;
+	
+	}
+//____________________________________________________________________________________________________________________________\\	
+	
+	// 6te Methode showSquare
+	public static void showSquare(LedService service) {
+		
+		service.addLeds(LedService.MAX_NUMBER_OF_LEDS);
+		
+		// boolean für die while schleife
+		boolean keepGoing = true;
+		
+		// whileschleife zur überprüfung von der eingabe
+		while( keepGoing == true) {
+			
+			// topLeft einlesen
+			System.out.println("Geben sie eine zahl ein, die als Topleft fungiert: ");
+			int topLeft = sc.nextInt();
+			
+			// Laege einlesen
+			System.out.println("Geben sie die Länge des Quadrats ein: ");
+			int length = sc.nextInt();
+			
+			// topRight ausrechnen
+			int topRight = topLeft - (length - 1);
+			
+			// bottomLeft ausrechnen
+			int bottomLeft = topLeft - ((length -1) * 16);
+			
+			// bottomRight ausrechnen
+			int bottomRight = topLeft - (length -1) - ((length - 1) * 16);
+			
+			// IF statement um zu schauen, ob das Viereck überhaupt im Rahmen ist
+			if( topLeft % LedService.MAX_ROWS > topRight % LedService.MAX_ROWS) {
+				
+			// Delay definieren
+			service.setDelayInMillis(50);
+			
+			// geschachtelte Klammer um den Rahmen des Quadrat auszufüllen
+				
+			// Äussere Schleife um eine zeile nach unten zu springen
+			for(int c = topLeft; c > bottomRight; c -= 16) {
+				
+				// Innere Schleife um die benötigten LEDs in der Zeile anzumachen
+				for(int counter = c; counter % 16 >= bottomRight % 16 && counter % 16 <= topLeft % 16; counter-- )	{		
+				if(counter > topRight || counter % 16 ==  bottomRight % 16 || counter % 16 == topLeft % 16 || counter < bottomLeft) {
+					service.turnLedOn(counter);																						}
+				}
+			}
+			
+			// While schleife ausschalten
+			keepGoing = false;
+			
+			
+			// Methodenaufruf für die diagonalen
+			showdiagonals(service,  topLeft, topRight, bottomLeft, bottomRight);
+			}
+			// else Statement um die Eingabe neu einzugeben
+			else {
+				System.out.println("Das ist eine unzulässige Eingabe!");
+				continue;}
+			}
+		
+
+		
+		// Für 5 Sekunden anhalten
+		service.stopExecutionFor(5000);
+		
+	// Alles stoppen
+	service.reset();
+		
+	}
+
+	public static void showdiagonals(LedService service, int topLeft, int topRight, int bottomLeft, int bottomRight) {
+		
+		// mit dieser Schleife bringt man die Led Lichter zum leuchten die eine zeile nach unten und Rechts vom vorherigen LED ist
+		for(int c = topLeft; c > bottomRight; c -= (LedService.MAX_COLUMNS +1)) {
+			service.turnLedOn(c);
+		}
+		// mit dieser Schleife bringt man die LED Lichter zum leuchten die eine Zeile nach unten und LINKS vom vorherigen LED ist
+		for(int c = topRight; c > bottomLeft; c -= (LedService.MAX_COLUMNS -1)) {
+			service.turnLedOn(c);
+		}
+	}
+	
+	
+
+//____________________________________________________________________________________________________________________________\\	
+
+	// 7te Methode implementieren showrectange
+	public static void showRectange(LedService service) {
+		
+		// BottomRight initialisieren
+		boolean korrekteEingabe = false;
+		
+		int topLeft = 0;
+		int bottomRight = 0;
+		
+		// Maximale Anzahl LEDs hinzufügen 
+		service.addLeds(LedService.MAX_NUMBER_OF_LEDS);
+	
+		do {
+		
+			// TopLeft initialisieren
+			System.out.print("\nGeben Sie eine positive ganze Zahl ein, die als topLeft Wert angezeigt werden soll: ");
+			topLeft = sc.nextInt();
+			
+			// bottomRight initialisieren
+			System.out.println("Geben Sie eine positive ganze Zahl ein, die als bottomRight Wert angezeigt werden soll: ");
+			bottomRight = sc.nextInt();
+			
+			if( bottomRight % 16 <= topLeft % 16) {	
+				korrekteEingabe = true;
+			}
+			else {
+				System.out.println("Die Zahlen sind ungültig!");
+				
+			}
+		
+		}while(korrekteEingabe == false);
+		// Delay definieren
+		service.setDelayInMillis(50);
+	
+		
+		// Geschachtelte Klammer zum Rechteck zum lechten zu bringen
+		
+		/* Die Klammer funktioniert so das zuerst vom Punkt topleft gestartet wird,
+		 * Danach durchlauft man die innere Klammer um alle Leds einzuschalten, die in der gleichen Reihe sind
+		 * bis man mit dem Modulo Operator erkennt, das die variable o einen niedrigeren Modulo ergebniss bekommt als der definierte punkt bottomRight
+		 * zudem ist noch eine zusätzlihe bediengung dring, das die variable o Modulo nicht grösser sein darf als die varbiable i Modulo
+		 * (Sonst gibt es einen Fehler wenn die Variable bottomRight Modulo 0 gegeben hat, 
+		 * da die nächste Zahl modulo 15 erhalten hat und die innere Schleife nicht beendert worden ist.)
+		 * Nachdem die innere Schleife beendet worden ist, wird die Variable i um 16 verkleineret. 
+		 * So springt sie eine Zeile nach unten.
+		 */
+		
+		// Äussere Schleife, damit man immer eine Zeile nach unten springen kann
+		for(int i= topLeft; i >= bottomRight; i -= LedService.MAX_COLUMNS) {
+			
+			// Innere Schleife, damit jedes LED eingeschaltet wird das benötigt wird.
+			for(int o = i; o % LedService.MAX_COLUMNS >= bottomRight % LedService.MAX_COLUMNS && o % LedService.MAX_COLUMNS <= i % LedService.MAX_COLUMNS; o--)	{
+				service.turnLedOn(o);												
+			}
+		}
+		
+		// Für 3 Sekunden anhalten
+		service.stopExecutionFor(3000);
+			
+			
+		// Äussere Schleife damit man von Rechteck innen einen Zeile nach unten springen kann
+		for(int i= topLeft - (LedService.MAX_COLUMNS + 1); i > bottomRight + LedService.MAX_COLUMNS; i -= LedService.MAX_COLUMNS) {
+			
+			// innere Schleife damit jedes LED ausgeschaltet wird, was im Rechteck vorhanden ist.
+			for(int o = i; o % LedService.MAX_COLUMNS > (bottomRight + LedService.MAX_COLUMNS) % LedService.MAX_COLUMNS; o--)	{
+				service.turnLedOff(o);									}
+		}
+		
+		// Für 3 Sekunden anhalten
+		service.stopExecutionFor(3000);
+		
+		// Alles zurücksetzen
+		service.reset();
+	
+		}
+	
+//____________________________________________________________________________________________________________________________\\		
+	
+	// 8te Methode implementieren showTriange
+	public static void showTriangle(LedService service){
+		
+		boolean keepGoing = true;
+		int topPoint = 0;
+		
+		
+		do {
+			// Tastatureingabe für die Höehe
+			System.out.println("Geben Sie eine positive ganze Zahl ein, die als Hoehe für das Dreieck gilt. Die Zahl darf nicht grösser als 8 sein: ");
+			topPoint = sc.nextInt();
+			
+			// if Statement, damit die Höehe nicht überschritten wird
+			if(topPoint > 1 && topPoint <= 8) {
+				keepGoing = false;
+			}
+			
+			// Fehlermeldung
+			else {System.out.println("Die Zahl ist zu gross. Die Zahl darf nicht grösser als 8 sein"); 		
+			}
+		}while(keepGoing == true);
+		
+		// Leds anschalten
+		service.addLeds(topPoint * 16);  
+	
+		// lengthCounter definierern, diesen brauche ich in der inneren geschachtelten Klammer, um die Leds anzuschalten die in jeder Zeile angehen müssen
+		int lengthCounter = topPoint;
+		
+		// Geschachtelte Schleife¨
+		
+		// Äussere Schleife ist um die Startposition in jeder Zeile zu definieren
+		for( int c = 15; c <= topPoint * 15; c += 15) {
+			
+			// Innere Schleife ist um die benötigten Leds in jeder Zeile anzuschalten
+			for(int i = c; i >  c -(lengthCounter *2 - 1); i--) {
+				service.turnLedOn(i);							
+			}
+			
+			lengthCounter--;
+		}		
+		
+		// Für 5 Sekunden anhalten
+		service.stopExecutionFor(5000);
+		
+		//Wiederholungen für das Bewegen des Dreieck
+		System.out.println("Bitte geben Sie ein, wie oft das Dreick hin und her gehen soll");
+		int wiederholungen = sc.nextInt();
+		
+		moveTriangle(service, topPoint, wiederholungen);
+		
+		// Alles zurücksetzen
+		service.reset();
+
+		}
+	
+	
+	// Methode moveTriangle für die Fakultative Aufgabe
+	private static void moveTriangle(LedService service, int topPoint, int wiederholungen) {
+		
+		service.setDelayInMillis(1);
+		
+		// Schleife zum wiederholen von der Bewegung von rechts nach links
+		for (int counter = 0; counter < wiederholungen; counter++) {
+		
+			// Schleife zum das Dreiek nach rechts zu bewegen
+			while(service.isOn(0) == false) {
+				for(int c = 0; c < topPoint * 16; c++) {
+					if( service.isOn(c) == true) {
+						service.turnLedOff(c);
+						service.turnLedOn(c-1); }
+				}
+			service.stopExecutionFor(750);
+			}
+		service.stopExecutionFor(1000);
+			while(service.isOn(15) == false) {
+				for(int c = topPoint * 16 -1; c >= 0; c--) {
+					if( service.isOn(c) == true) {
+						service.turnLedOff(c);
+						service.turnLedOn(c+1); }
+				}
+			service.stopExecutionFor(750);
+			}
+		service.stopExecutionFor(1000);
+		}
+	
+	}
+	
+	
+//____________________________________________________________________________________________________________________________\\	
+	
+	// 9te Methode implementieren siebDesEratosthenes
+	public static void siebDesEratosthenes(LedService service) {
+		
+		// Leds hinzufügen
+		service.addLeds(LedService.MAX_NUMBER_OF_LEDS);
+		
+		// Alle Leds anschalten
+		for(int c = 0; c < LedService.MAX_NUMBER_OF_LEDS; c++) {
+		service.turnLedOn(c);								}
+		
+		// Delay hinzufügen um es besser zu Visualisieren
+		service.setDelayInMillis(50);
+		
+		// 0 und 1 ausschalten
+		service.turnLedOff(0);
+		service.turnLedOff(1);
+		
+		// Geschachtelte Schleife
+		
+		// Äusser Schleife um die Startposition zu bestimmen
+		for(int counter = 2; counter * counter < LedService.MAX_NUMBER_OF_LEDS; counter++) {
+			if(service.isOn(counter)){
+				
+				// Kosmetische Schleife, damit das LED aufblinkt, dass benutzt wird
+				for( int repeater = 0; repeater < 2; repeater++) {
+				service.turnLedOff(counter);
+				service.stopExecutionFor(300);
+				service.turnLedOn(counter);
+				service.stopExecutionFor(300);
+				}
+				// Innere Schleife um alle LEds auszuschalten die keine Primzahl sind
+				for(int c = counter +1; c < LedService.MAX_NUMBER_OF_LEDS; c++ ) {
+					if( c % counter == 0 ) 		{
+						service.turnLedOff(c);	}	
+				}
+			}
+			service.stopExecutionFor(500);
+		}
+		
+		// Für 3 Sekunden warten
+		service.stopExecutionFor(3000);
+	// Alles zurücksetzen	
+	service.reset();
+	
+	}
+	
+//____________________________________________________________________________________________________________________________\\	
+	
+	/*
+	 * 1. Mit welcher Methode können LEDs dem Steckboard hinzugefügt werden, wobei die LED Farbe explizit angegeben werden kann?
+	 *  	mit der Methode: addLeds(int anzahl, LedColor ledColor)
+	 *  
+	 *  
+	 * 2. Mit welcher Methode kann die Farbe eines beliebigen LEDs abgefragt werden? Was liefert diese Methode zurück?
+	 * 		mit der Methode: color(int ledNumber)
+	 * 
+	 */
+	
+	// 10te Methode implementieren countColors
+	public static void countColors(LedService service) {
+		
+		// Leds hinzufügen mit zufälliger Farbe
+		service.addLeds(LedService.MAX_NUMBER_OF_LEDS, LedColor.RANDOM);
+			
+		// Variablen definieren für die Farben
+		int rot = 0;
+		int blau = 0;
+		int gruen = 0;
+		int gelb = 0;
+		
+		// Alle anschalten
+		for(int c = 0; c < LedService.MAX_NUMBER_OF_LEDS; c++) {
+			service.turnLedOn(c);
+		}
+		// Schleife zum nachschauen, wie viele LEDs welche farbe haben
+		for(int counter = 0; counter < LedService.MAX_NUMBER_OF_LEDS; counter++) {
+			service.isOn(counter);
+			if(service.color(counter) == LedColor.RED) 	{
+				rot++;									}
+			else if(service.color(counter) == LedColor.BLUE) 	{
+				blau++;											}
+			else if(service.color(counter) == LedColor.GREEN) 	{
+				gruen++;										}
+			else if(service.color(counter) == LedColor.YELLOW)	{
+				gelb++;											}
+		}
+		// Ausgabe
+		System.out.println("RED: " + rot + " LEDs");
+		System.out.println("BLUE: " + blau+ " LEDs");
+		System.out.println("GREEN: " + gruen + " LEDs");
+		System.out.println("YELLOW: " + gelb + " LEDs");
+	}
+	
+//____________________________________________________________________________________________________________________________\\	
+
+	// 10.2te Methode implementieren countColorsExt
+	public static void countColorsExt(LedService service) {
+		
+		// Leds hinzufügen mit zufälliger Farbe
+		service.addLeds(LedService.MAX_NUMBER_OF_LEDS, LedColor.RANDOM);
+		
+		// Delay setzen
+		service.setDelayInMillis(50);
+			
+		// Variablen definieren für die Farben
+		int rot = 0;
+		int rotMax = 0;
+		int rotMaxZeile= 0;
+		int blau = 0;
+		int blauMax = 0;
+		int blauMaxZeile = 0;
+		int gruen = 0;
+		int gruenMax = 0;
+		int gruenMaxZeile = 0;
+		int gelb = 0;
+		int gelbMax = 0;
+		int gelbMaxZeile  =0;
+		
+		int zeilenNummer = 0;
+		
+		// Alle anschalten
+		for(int c = 0; c < LedService.MAX_NUMBER_OF_LEDS; c++) {
+			service.turnLedOn(c);}
+		
+		
+		// Schleife zum nachschauen, wie viele LEDs welche farbe haben
+		for(int c = 0; c < LedService.MAX_NUMBER_OF_LEDS; c = c + LedService.MAX_COLUMNS) {
+			zeilenNummer++;
+			
+			for(int counter = c; counter < c +LedService.MAX_COLUMNS; counter++ ) {					
+				service.isOn(counter);
+				// Farbencounter erhöhen
+				if(service.color(counter) == LedColor.RED) 	{
+					rot++;									}
+				else if(service.color(counter) == LedColor.BLUE) 	{
+					blau++;											}
+				else if(service.color(counter) == LedColor.GREEN) 	{
+					gruen++;										}
+				else if(service.color(counter) == LedColor.YELLOW)	{
+					gelb++;	}
+			}	
+			
+			// Überprüfen ob eine höhere Zeile mehr oder gleich viel hat wie eine vorherige Zeile
+			if( rot >= rotMax) {
+				rotMax = rot;
+				rotMaxZeile = zeilenNummer;
+			}
+			if( blau >= blauMax) {
+				blauMax = blau;
+				blauMaxZeile = zeilenNummer;
+			}
+			if( gruen >= gruenMax) {
+				gruenMax = gruen;
+				gruenMaxZeile = zeilenNummer;
+			}
+			if( gelb >= gelbMax) {
+				gelbMax = rot;
+				gelbMaxZeile = zeilenNummer;
+		}
+		
+		// Farbcounter zurücksetzen
+		rot = 0;
+		blau = 0;
+		gruen = 0;
+		gelb = 0;
+	
+		}
+		// Ausgabe
+		System.out.println("RED: " + rotMax + " LEDs in der Zeile-Nr." + rotMaxZeile );
+		System.out.println("BLUE: " + blauMax + " LEDs in der Zeile-Nr." + blauMaxZeile);
+		System.out.println("GREEN: " + gruenMax + " LEDs in der Zeile-Nr." + gruenMaxZeile );
+		System.out.println("YELLOW: " + gelbMax + " LEDs in der Zeile-Nr." + gelbMaxZeile);
+		System.out.println("Die Zeilennummern beginnen von 1(unterste Zeile) bis 16(oberste Zeile)");
+		
+	}
+
+}
